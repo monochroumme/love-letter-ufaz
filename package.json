@@ -1,0 +1,27 @@
+{
+  "name": "software",
+  "version": "1.0.0",
+  "description": "Game called \"Love Letter\"",
+  "main": "app.js",
+  "scripts": {
+    "test": "mocha",
+    "start": "nodemon app.js",
+    "start-sever": "node app.js"
+  },
+  "author": "Rufat Huseynov",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect-flash": "^0.1.1",
+    "connect-mongodb-session": "^2.3.1",
+    "csurf": "^1.11.0",
+    "express-session": "^1.17.0",
+    "mongoose": "^5.9.7",
+    "nodemailer": "^6.4.6",
+    "nodemailer-sendgrid-transport": "^0.2.0",
+    "nodemon": "^2.0.2"
+  },
+  "devDependencies": {
+    "mocha": "^7.1.2"
+  }
+}
