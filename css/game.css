@@ -1,0 +1,51 @@
+.customContainer{
+    
+    
+    background-image: url(/home/djeks/Desktop/love-letter-ufaz/assets/violet_background.jpeg);
+    
+}
+.header , .buttons, .message{
+    display: flex;
+    justify-content: center;
+}
+#start-button{
+    border: 1px solid ;
+    border-radius: 10px;
+    background-color: rgb(148, 11, 57);
+    font-weight: bold;
+    color: seashell;
+}
+#end-button{
+    border-bottom:  1px solid;
+    border-radius: 10px;
+    background-color: rgb(65, 7, 112);
+    font-weight: bold;
+    color: rgb(189, 51, 51);
+}
+p{
+    text-align: center;
+    font-family: 'Dancing Script', cursive;
+    font-size: 50px;
+    color: rgb(46, 5, 85);
+    font-weight: bold;
+}
+.playerContent{
+    margin-top: 30px;
+}
+.playerContentTop{
+    border: 1px solid rgb(19, 19, 42);
+    border-radius: 10px;
+    display: flex;
+    background-color: rgb(75, 8, 75);
+    justify-content: center;
+}
+
+.cardClass{
+    border: 1px solid;
+    border-sh
+    border-radius: 12px;
+}
+.cardClass img{
+    width: 100%;
+    border-radius: 12px;
+}
