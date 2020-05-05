@@ -1,0 +1,72 @@
+.customBody{
+  
+    background-image: url(../assets/background.jpg);
+    height: 100vh;
+
+.entryContent{
+    height: 100vh;
+}
+.entryContentLeft{
+
+ 
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Dancing Script', cursive;
+    h1{
+        display: none;
+        font-size: 20px;
+    }
+    
+}
+
+.entryContentRight{
+    height: 100vh;
+    display: none;
+    .imageHolder{
+        position: relative;
+        top: 100px;
+            img{
+                transform: rotate(45deg);
+                width: 10%;
+               
+            }
+        
+        
+       
+ }
+ .imageHolderSecond{
+    position: relative;
+    top: 100px;
+    left: 200px;
+        img{
+            transform: rotate(30deg);
+            width: 20%;
+           
+        }
+    
+    
+   
+}
+
+}
+.playButtonContent{
+    border: 1px solid ;
+    height: 100px;
+    width: 100px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    i{
+        font-size: 60px;
+        color: lightseagreen;
+    }
+    z-index: 999;
+    top: 50%;
+    left: 50%;
+    border-radius: 50%;
+    position: absolute;
+}
+}
