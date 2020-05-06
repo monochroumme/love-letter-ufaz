@@ -29,4 +29,6 @@ router.post('/login', authController.postLogin);
 // after Registration Log OUT
 router.post('/', authController.postLogout);
 
+router.get('/:room', authController.getCreatedRoom);
+
 module.exports = router;
