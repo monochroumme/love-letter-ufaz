@@ -79,7 +79,7 @@
 </head>
 <body>
     <h1>Welcome , <%= username %></h1>
-    <h1> Soon, you will choose your  here!</h1>
+    <h1> Soon, you will choose or create your room here!</h1>
     <br>
 
     <div id="room-container">
@@ -88,9 +88,11 @@
             <a href="/<%= room %>">Join</a>
         <% }); %> 
 
-        <form>
-
+        <form action="/room" method="POST">
+            <input name="room" type="text" required>
+            <button type="submit">New Room</button>
         </form>
+        <br><br><br>
     </div>
     <div id="mario-chat">
         <h2>Mario Chat</h2>

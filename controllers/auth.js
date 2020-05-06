@@ -59,6 +59,7 @@ exports.getIndex = function(req, res, next){
     }
 };
 
+
 exports.getCreatedRoom = function(req, res, next){
     if(!req.session.isLoggedIn){
         return res.redirect('/login');
@@ -68,7 +69,16 @@ exports.getCreatedRoom = function(req, res, next){
             roomName: req.params.room
         });
     }
-}
+};
+
+exports.postCreatedRoom = function(req, res, next){
+    if(rooms[req.body.room] != null){
+        return res.redirect('/'); //video 11:16
+    }
+    rooms[req.body.room] = {users: {}};
+    res.redirect(req.body.room);
+};
+
 
 exports.postSignUP = function(req, res, next){
     const username = req.body.username;
