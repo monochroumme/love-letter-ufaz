@@ -23,3 +23,11 @@ exports.getRoom = function(req, res, next){
         });
     }
 }
+
+exports.postRoom = function(req, res, next){
+    if(rooms[req.body.room] != null){
+        return res.redirect('/'); //video 11:16
+    }
+    rooms[req.body.room] = {users: {}};
+    res.redirect(req.body.room);
+};
