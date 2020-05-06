@@ -8,13 +8,15 @@
     "start": "nodemon app.js",
     "start-sever": "node app.js"
   },
-  "author": "Rufat Huseynov",
+  "author": "Rufat Huseynov & monochroumme",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "connect-flash": "^0.1.1",
     "connect-mongodb-session": "^2.3.1",
     "csurf": "^1.11.0",
+    "ejs": "^3.1.2",
+    "express": "^4.17.1",
     "express-session": "^1.17.0",
     "mongoose": "^5.9.7",
     "nodemailer": "^6.4.6",

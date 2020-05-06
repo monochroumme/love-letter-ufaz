@@ -5,5 +5,4 @@ $(document).ready(function(){
        fontSize: '80px'   
     },3000);
     $('.entryContentRight').show(3000);
-
 })

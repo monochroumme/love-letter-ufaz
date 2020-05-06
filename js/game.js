@@ -1,16 +1,9 @@
 $(document).ready(function(){
-
-
-    // console.log("sa")
-    let inputs=[];
+    let inputs = [], players = [];
 
     inputs=  $('.playerContentTopContent input').toArray();
-    let players=[];
-   players =   $('.playerContentTopContent').toArray();
+    players =   $('.playerContentTopContent').toArray();
 
- 
-    console.log(inputs);
-   
     let startGame=$('#start-button');
     $(document).on('click', ' #start-button',function(){
         let names=[];
@@ -22,8 +15,5 @@ $(document).ready(function(){
         $(players[i]).append(` <h1>${ names[i] } </h1`);
 
         }        
-        
     })
-    
-  
  })

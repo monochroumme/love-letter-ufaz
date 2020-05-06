@@ -22,7 +22,6 @@ const store = new MongoDBStore({
     collection: 'sessions'
 });
 
-
 // resave:false - session won't be saved in every request has been done
 // saveUninitialized:false - nothing changed so no save
 app.use(
@@ -60,3 +59,5 @@ mongoose
     .catch(err => {
         console.log(err);
     });
+
+console.log("The server started on port", PORT);
