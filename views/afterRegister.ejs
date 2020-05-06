@@ -4,12 +4,179 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= pageTitle %></title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.js"></script>
+    <style>
+        body{
+            font-family: 'Nunito';
+        }
+
+        h2{
+            font-size: 18px;
+            padding: 10px 20px;
+            color: #575ed8;
+        }
+
+        #mario-chat{
+            max-width: 600px;
+            margin: 30px auto;
+            border: 1px solid #ddd;
+            box-shadow: 1px 3px 5px rgba(0,0,0,0.05);
+            border-radius: 2px;
+        }
+
+        #chat-window{
+            height: 400px;
+            overflow: auto;
+            background: #f9f9f9;
+        }
+
+        #output p{
+            padding: 14px 0px;
+            margin: 0 20px;
+            border-bottom: 1px solid #e9e9e9;
+            color: #555;
+        }
+
+        #feedback p{
+            color: #aaa;
+            padding: 14px 0px;
+            margin: 0 20px;
+        }
+
+        #output strong{
+            color: #575ed8;
+        }
+
+        label{
+            box-sizing: border-box;
+            display: block;
+            padding: 10px 20px;
+        }
+
+        input{
+            padding: 10px 20px;
+            box-sizing: border-box;
+            background: #eee;
+            border: 0;
+            display: block;
+            width: 100%;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            font-family: Nunito;
+            font-size: 16px;
+        }
+
+        button{
+            background: #575ed8;
+            color: #fff;
+            font-size: 18px;
+            border: 0;
+            padding: 12px 0;
+            width: 100%;
+            border-radius: 0 0 2px 2px;
+        }
+    </style>
 </head>
 <body>
     <h1>Welcome , <%= username %></h1>
-    <h1> Soon, you will be already playing here!</h1>
+    <h1> Soon, you will choose your  here!</h1>
+    <br>
+
+    <div id="room-container">
+        <% Object.keys(rooms).forEach(room => { %>
+            <div><%= room %></div>
+            <a href="/<%= room %>">Join</a>
+        <% }); %> 
+
+        <form>
+
+        </form>
+    </div>
+    <div id="mario-chat">
+        <h2>Mario Chat</h2>
+        <div id="chat-window">
+            <div id="output"></div>
+            <div id="feedback"> </div>
+        </div>
+        <input id="handle" type="hidden" value="<%= username %>"/>
+        <input id="message" type="text" placeholder="Message" />
+        <button id="send">Send</button>
+    </div>
+    <br><br><br><br><br><br>
     <form method="POST">
         <button type="submit">Logout</button>
+        
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.4/qs.min.js" integrity="sha256-ijqLssetA1NMNjZ+w1zaUafQQLm4IW5OoM8O+4tatME=" crossorigin="anonymous"></script>
+          <script>
+              const socket = io.connect();
+              var message = document.getElementById('message');
+              var handle = document.getElementById('handle');
+              var btn = document.getElementById('send');
+              var output = document.getElementById('output');
+              var feedback = document.getElementById('feedback');
+              var chatWindow = document.getElementById('chat-window');
+              var username = handle.value;
+
+            //   sends data to server when send is clicked
+                btn.addEventListener('click', function(event) {
+                    if(message.value != 0){   
+                        socket.emit('chat', {
+                            message: message.value,
+                            handle: handle.value
+                        });
+                    }
+                   message.value = "";
+                   message.focus();
+                    chatWindow.scrollTop = chatWindow.scrollHeight;
+                }); 
+
+                // sends data to server when enter is pressed
+                window.addEventListener("keypress", function(event){
+                    if(event.keyCode == 13){
+                        if(message.value != 0){   
+                            socket.emit('chat', {
+                                message: message.value,
+                                handle: handle.value
+                            });
+                        }
+                        message.value = "";
+                        message.focus();
+                        chatWindow.scrollTop = chatWindow.scrollHeight;
+                    }
+                });
+                
+
+                message.addEventListener('keypress', function(event){
+                    if(event.keyCode != 13){
+                        socket.emit('typing', handle.value);
+                    }
+                });
+
+                socket.on('chat', function(data){
+                   feedback.innerHTML = "";
+                   output.innerHTML += '<p><strong>' + data.handle + ': </strong>' + data.message + '</p>'; 
+                });
+
+                socket.on('typing', function(data){
+                        feedback.innerHTML = '<p><em>' + data + ' is typing a message...</em></p>';
+                });
+
+                socket.on('message', function(message){
+                    feedback.innerHTML += '<p><em>'+ message + '</em></p>';
+                });
+
+                socket.emit('new-user', username);
+
+                socket.on('user-connected', function(name) {
+                    feedback.innerHTML += `<p><em>${name} has entered the chat </em></p`;
+                });
+
+                socket.on('user-disconnected', function(name){
+                    feedback.innerHTML += `<p><em>${name} has left the chat </em></p`;
+                });
+                
+          </script>  
+        
     </form>
     
 </body>

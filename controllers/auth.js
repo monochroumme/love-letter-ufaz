@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 
+// const rooms = {};
+
 const nodeMailer = require('nodemailer');
 const sendgridTransport = require('nodemailer-sendgrid-transport');
 const transporter = nodeMailer.createTransport(sendgridTransport({
@@ -41,6 +43,8 @@ exports.getSignUP = function(req, res, next){
     }
 };
 
+
+const rooms = { name: {}};
 exports.getIndex = function(req, res, next){
     if(!req.session.isLoggedIn){
         res.render('index', {
@@ -49,10 +53,22 @@ exports.getIndex = function(req, res, next){
     }else{
         res.render('afterRegister', {
             pageTitle: 'Love Letter',
-            username: req.session.user.username
+            username: req.session.user.username,
+            rooms: rooms 
         });
     }
 };
+
+exports.getCreatedRoom = function(req, res, next){
+    if(!req.session.isLoggedIn){
+        return res.redirect('/login');
+    }else{
+        res.render('room', {
+            pageTitle: 'Game Room',
+            roomName: req.params.room
+        });
+    }
+}
 
 exports.postSignUP = function(req, res, next){
     const username = req.body.username;
@@ -150,8 +166,4 @@ exports.postLogout = function(req, res, next){
             return res.redirect('/login');
         }
     });
-};
-
-exports.hello = function(req, res, next){
-    return 'hello';
 };
