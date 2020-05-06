@@ -1,14 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const userRouter = require('./routes/userRouter');
-const app = express();
-const {userJoin, getCurrentUser} = require('./utils/users');
+const userRouter = require('./back/routes/userRouter');
+const {userJoin, getCurrentUser} = require('./back/utils/users');
 
 const mongoose = require('mongoose');
 const url = 'mongodb+srv://Rufat:rufik1115@cluster0-haajy.mongodb.net/Practice';
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session); //session - express-session
 
+const app = express();
 const flash = require('connect-flash');
 
 var PORT = process.env.PORT || 3000;

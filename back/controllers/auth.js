@@ -1,8 +1,6 @@
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 
-const rooms = {};
-
 const nodeMailer = require('nodemailer');
 const sendgridTransport = require('nodemailer-sendgrid-transport');
 const transporter = nodeMailer.createTransport(sendgridTransport({
@@ -68,7 +66,7 @@ exports.getCreatedRoom = function(req, res, next){
     }
 }
 
-exports.postSignUP = function(req, res, next){
+exports.postSignup = function(req, res, next){
     const username = req.body.username;
     const email = req.body.email;
     const password = req.body.password;
