@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "mocha",
-    "start": "nodemon app.js",
+    "start": "nodemon app.js -e scss -e ejs",
     "start-sever": "node app.js"
   },
   "author": "Rufat Huseynov & monochroumme",
@@ -26,6 +26,7 @@
     "socket.io-client": "^2.3.0"
   },
   "devDependencies": {
+    "compile-sass": "^1.1.0",
     "mocha": "^7.1.2"
   }
 }

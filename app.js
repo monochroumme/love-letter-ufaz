@@ -1,6 +1,9 @@
 const express = require('express');
+const path = require('path');
 const bodyParser = require('body-parser');
-const userRouter = require('./back/routes/userRouter');
+const flash = require('connect-flash');
+const compileSass = require('compile-sass');
+const userRouter = require('./back/routes/routes');
 const {userJoin, getCurrentUser} = require('./back/utils/users');
 
 const mongoose = require('mongoose');
@@ -9,7 +12,8 @@ const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session); //session - express-session
 
 const app = express();
-const flash = require('connect-flash');
+
+app.use(express.static("res"));
 
 var PORT = process.env.PORT || 3000;
 var socket = require('socket.io');
@@ -17,12 +21,22 @@ var socket = require('socket.io');
 const csrf = require('csurf');
 const csrfProtection = csrf();
 
-
-
+app.use(bodyParser.urlencoded({extended:false}));
 app.set('view engine', 'ejs');
 app.set('views', 'views'); //2nd views is my folder
 
-app.use(bodyParser.urlencoded({extended:false}));
+app.use('/css/:cssName', compileSass.setup({
+    sassFilePath: path.join(__dirname, 'res/scss/'),
+    sassFileExt: 'scss',
+    embedSrcMapInProd: true,
+    resolveTildes: true,
+    nodeSassOptions: {
+        errLogToConsole: true,
+        noCache: true,
+        force: true
+    }
+}));
+
 
 const store = new MongoDBStore({
     uri: url, // url is above (mongodb database) (Practice database - if 2 db , then 2 uri)

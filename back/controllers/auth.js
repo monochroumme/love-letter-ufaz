@@ -39,33 +39,6 @@ exports.getSignup = function(req, res, next){
     }
 };
 
-
-const rooms = { name: {}};
-exports.getIndex = function(req, res, next){
-    if(!req.session.isLoggedIn){
-        res.render('index', {
-            pageTitle: 'Love Letter - Home'
-        });
-    } else {
-        res.render('index', {
-            pageTitle: 'Love Letter - Home',
-            username: req.session.user.username,
-            rooms: rooms
-        });
-    }
-};
-
-exports.getCreatedRoom = function(req, res, next){
-    if(!req.session.isLoggedIn){
-        return res.redirect('/login');
-    }else{
-        res.render('index', {
-            pageTitle: 'Love Letter - In Game',
-            roomName: req.params.room
-        });
-    }
-}
-
 exports.postSignup = function(req, res, next){
     const username = req.body.username;
     const email = req.body.email;

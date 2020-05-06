@@ -6,9 +6,157 @@
     <title><%= pageTitle %></title>
     <link href="https://fonts.googleapis.com/css?family=Dancing+Script&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link rel="stylesheet" href="../css/app.css">
+    <link rel="stylesheet" href="css/app.css">
+    <link rel="shortcut icon" href="favicon.ico" />
 </head>
-<body class="index-page">
+<body>
+	<div class="game-bg">
+		<img src="pics/bg.jpg">
+	</div>
+	<div class="game-modal">
+		<div class="blur"></div>
+		<div class="card">
+			
+		</div>
+	</div>
+	<div class="content">
+		<div class="player-top">
+			<div class="cards top">
+				<div class="card">
+					<% if (playerTop.card1) { %>
+						<img src="pics/card-0.png">
+					<% } %>
+				</div>
+				<div class="card">
+					<% if (playerTop.card2) { %>
+						<img src="pics/card-0.png">
+					<% } %>
+				</div>
+			</div>
+			<div class="board__user-info flipped">
+				<h2 class="board__username"><%= playerTop.username %></h2>
+				<div class="board__tokens">
+					<% for (let i = 0; i < maxTokens; i++) { %>
+						<% if (i < playerTop.tokens) { %>
+							<img src="pics/token-filled.svg">
+						<% } else { %>
+							<img src="pics/token-unfilled.svg">
+						<% } %>
+					<% } %>
+				</div>
+			</div>
+		</div>
 
+		<% if (playerRight) { %>
+			<div class="player-right">
+				<div class="board__user-info rtl">
+					<h2 class="board__username"><%= playerRight.username %></h2>
+					<div class="board__tokens">
+						<% for (let i = 0; i < maxTokens; i++) { %>
+							<% if (i < playerRight.tokens) { %>
+								<img src="pics/token-filled.svg">
+							<% } else { %>
+								<img src="pics/token-unfilled.svg">
+							<% } %>
+						<% } %>
+					</div>s
+				</div>
+				<div class="cards right">
+					<div class="card">
+						<% if (playerRight.card2) { %>
+							<img src="pics/card-0.png">
+						<% } %>
+					</div>
+					<div class="card">
+						<% if (playerRight.card2) { %>
+							<img src="pics/card-0.png">
+						<% } %>
+					</div>
+				</div>
+			</div>
+		<% } %>
+
+		<div class="player-bottom">
+			<div class="board__user-info">
+				<h2 class="board__username"><%= playerBottom.username %></h2>
+				<div class="board__tokens">
+					<% for (let i = 0; i < maxTokens; i++) { %>
+						<% if (i < playerBottom.tokens) { %>
+							<img src="pics/token-filled.svg">
+						<% } else { %>
+							<img src="pics/token-unfilled.svg">
+						<% } %>
+					<% } %>
+				</div>
+			</div>
+			<div class="cards bottom">
+				<div class="card in-hand">
+					<% if (playerBottom.card1) { %>
+						<img src="pics/card-<%= playerBottom.card1 %>.png">
+					<% } %>	
+				</div>
+				<div class="card in-hand">
+					<% if (playerBottom.card2) { %>
+						<img src="pics/card-<%= playerBottom.card2 %>.png">
+					<% } %>	
+				</div>
+			</div>
+		</div>
+
+		<% if (playerLeft) { %>
+			<div class="player-left">
+				<div class="board__user-info ltr">
+					<h2 class="board__username"><%= playerLeft.username %></h2>
+					<div class="board__tokens">
+						<% for (let i = 0; i < maxTokens; i++) { %>
+							<% if (i < playerLeft.tokens) { %>
+								<img src="pics/token-filled.svg">
+							<% } else { %>
+								<img src="pics/token-unfilled.svg">
+							<% } %>
+						<% } %>
+					</div>s
+				</div>
+				<div class="cards left">
+					<div class="card">
+						<% if (playerLeft.card1) { %>
+							<img src="pics/card-0.png">
+						<% } %>
+					</div>
+					<div class="card">
+						<% if (playerLeft.card2) { %>
+							<img src="pics/card-0.png">
+						<% } %>
+					</div>
+				</div>
+			</div>
+		<% } %>
+
+		<div class="deck">
+			<div class="deck-left">
+				<% for (let i = 0; i < deck.cardsDismissed.length; i++) { %>
+					<div class="card">
+						<img src="pics/card-<%= deck.cardsDismissed[i] %>.png">
+					</div>
+				<% } %>
+			</div>
+			<div class="deck-center">
+				<% if (deck.cardsInDeck == 1) { %>
+					<img src="pics/card-0.png">
+				<% } else if (deck.cardsInDeck < 8) { %>
+					<img src="pics/deck-small.png">
+				<% } else { %>
+					<img src="pics/deck-big.png">
+				<% } %>
+			</div>
+			<div class="deck-right">
+				<% for (let i = 0; i < deck.cardsPlayed.length; i++) { %>
+					<div class="card">
+						<img src="pics/card-<%= deck.cardsPlayed[i] %>.png">
+					</div>
+				<% } %>
+			</div>
+		</div>
+	</div>
 </body>
 </html>

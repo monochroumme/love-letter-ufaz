@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/auth');
+const api = require('../controllers/api');
+const rooms = require('../controllers/rooms');
 
 
 // const isAuth = require('../middleware/isAuth');
@@ -9,26 +11,27 @@ const authController = require('../controllers/auth');
 
 
 // Login page with GET request 
-router.get('/login', authController.getLogin);
+// router.get('/login', authController.getLogin);
 
 // SignUP page with GET request
-router.get('/signup', authController.getSignup);
+// router.get('/signup', authController.getSignup);
 
-// StayHome with GET request
-router.get('/', authController.getIndex);
+// GET requests
+router.get('/', api.index);
+router.get('/:room', api.room);
 
 // SignUP with POST request
-router.post('/signup', authController.postSignup);
+// router.post('/signup', authController.postSignup);
 
 // LogIN with POST request
-router.post('/login', authController.postLogin);
+// router.post('/login', authController.postLogin);
 
 // after Registration Home page
 // router.get('/home', authController.getGotSession);
 
 // after Registration Log OUT
-router.post('/', authController.postLogout);
+// router.post('/', authController.postLogout);
 
-router.get('/:room', authController.getCreatedRoom);
+router.get('/api/:room', rooms.getRoom);
 
 module.exports = router;
