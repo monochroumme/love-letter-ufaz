@@ -13,10 +13,53 @@
 	<div class="game-bg">
 		<img src="pics/bg.jpg">
 	</div>
-	<div class="game-modal">
+	<div class="game-logo">
+		<img src="pics/love-letter-logo.png" alt="Love Letter Game">
+	</div>
+	<div class="game-modal" style="opacity: 0;">
 		<div class="blur"></div>
 		<div class="card">
-			
+			<img class="game-modal__logo" src="pics/love-letter-logo.png" alt="Love Letter Game">
+			<div id="modal-welcome" class="game-modal__content active">
+				<h2 class="game-modal__title">Welcome!</h2>
+				<h3 class="game-modal__subtitle">Please enter your nickname</h3>
+				<div class="game-modal__input-area" id="modal-username">
+					<input type="text" name="nickname">
+					<button>Enter</button>
+				</div>
+			</div>
+			<div id="modal-menu" class="game-modal__content hidden">
+				<h2 class="game-modal__title" id="modal-menu-welcome"></h2>
+				<div class="game-modal__input-area">
+					<button id="modal-menu-create" class="button" style="margin-right: 10px;">Create a game room</button>
+					<button id="modal-menu-enter" class="button">Enter a game room</button>
+				</div>
+			</div>
+			<div id="modal-create" class="game-modal__content hidden">
+				<h2 class="game-modal__title">Create a game room</h2>
+				<h3 class="game-modal__subtitle">How many players you want in the game?</h3>
+				<div class="game-modal__input-area">
+					<button id="modal-create-2" class="ltr">2</button>
+					<button id="modal-create-3" class="no-radius">3</button>
+					<button id="modal-create-4">4</button>
+				</div>
+			</div>
+			<div id="modal-enter" class="game-modal__content hidden">
+				<h2 class="game-modal__title">Enter a game room</h2>
+				<h3 class="game-modal__subtitle">Enter the room code</h3>
+				<div class="game-modal__input-area" id="modal-enter-code">
+					<input type="text" name="nickname">
+					<button>Enter</button>
+				</div>
+			</div>
+			<div id="modal-error" class="game-modal__content hidden">
+				<h2 class="game-modal__title">Something went wrong :(</h2>
+				<h3 class="game-modal__subtitle">Server says</h3>
+				<div class="game-modal__input-area flex-column" id="modal-error-message">
+					<p></p>
+					<button class="button">Reload</button>
+				</div>
+			</div>
 		</div>
 	</div>
 	<div class="content">
@@ -135,28 +178,28 @@
 		<div class="deck">
 			<div class="deck-left">
 				<% for (let i = 0; i < deck.cardsDismissed.length; i++) { %>
-					<div class="card">
+					<div class="card" style="z-index: <%= deck.cardsDismissed.length - i %>">
 						<img src="pics/card-<%= deck.cardsDismissed[i] %>.png">
 					</div>
 				<% } %>
 			</div>
 			<div class="deck-center">
-				<% if (deck.cardsInDeck == 1) { %>
-					<img src="pics/card-0.png">
-				<% } else if (deck.cardsInDeck < 8) { %>
-					<img src="pics/deck-small.png">
-				<% } else { %>
-					<img src="pics/deck-big.png">
+				<% for (let i = 0; i < deck.cardsInDeck; i++) { %>
+					<div class="card" style="z-index: <%= i %>">
+						<img src="pics/card-0.png">
+					</div>
 				<% } %>
 			</div>
 			<div class="deck-right">
 				<% for (let i = 0; i < deck.cardsPlayed.length; i++) { %>
-					<div class="card">
+					<div class="card" style="z-index: <%= i %>">
 						<img src="pics/card-<%= deck.cardsPlayed[i] %>.png">
 					</div>
 				<% } %>
 			</div>
 		</div>
 	</div>
+
+	<script type="text/javascript" src="js/modal.js"></script>
 </body>
 </html>

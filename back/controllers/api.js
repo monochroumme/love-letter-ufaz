@@ -1,25 +1,17 @@
 const pics = require('../content/pics');
 
-// testing
-	// global
-	let maxTokens = 7;
-
-	// player bottom
-	let card1 = pics.baron,
-		card2 = pics.princess,
-		username = 'monochroumme',
-		tokens = 3;
-
+// global
+let maxTokens = 7;
 
 exports.index = function(req, res, next){
     res.render('index', {
         pageTitle: 'Love Letter',
         maxTokens,
         playerBottom: {
-	        card1,
-	        card2,
-	        username,
-	        tokens
+	        card1: pics.baron,
+	        card2: pics.princess,
+	        username: 'monochroumme',
+	        tokens: 3
         },
         playerTop: {
         	card1: true,
@@ -79,6 +71,9 @@ exports.room = function(req, res, next){
         	cardsDismissed: [0, 1, 2],
         	cardsInDeck: 15,
         	cardsPlayed: [1, 5, 3, 6]
-        }
+        },
+
+        // new
+        hasValidRoomId: true
     });
 };

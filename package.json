@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "mocha",
-    "start": "nodemon app.js -e scss -e ejs",
+    "start": "nodemon app.js",
     "start-sever": "node app.js"
   },
   "author": "Rufat Huseynov & monochroumme",
@@ -28,5 +28,17 @@
   "devDependencies": {
     "compile-sass": "^1.1.0",
     "mocha": "^7.1.2"
+  },
+  "nodemonConfig": {
+    "restartable": "rs",
+    "ignore": [
+      ".git",
+      "node_modules/**/node_modules"
+    ],
+    "verbose": true,
+    "env": {
+      "NODE_ENV": "development"
+    },
+    "ext": "js, json, scss, ejs"
   }
 }
