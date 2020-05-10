@@ -1,4 +1,8 @@
+const Room = require('../models/room');
+const Player = require('../models/player'); 
 var rooms = {};
+
+
 const io = require('socket.io')();
 
 exports.getIndex = function(req, res, next){
@@ -29,7 +33,7 @@ exports.postRoom = function(req, res, next){
     if(rooms[req.body.room] != null){ // checks if room exists or not
         return res.redirect('/'); 
     }
-    rooms[req.body.room] = {users: {}};
+    rooms[req.body.room] = new Room;
     // res.redirect('/api/',req.body.room);
     res.redirect(req.body.room);
 
@@ -47,7 +51,7 @@ exports.getApiRoom = function(req, res, next){
     res.render('room', {
         roomName: req.params.room,
         pageTitle: req.params.room,
-        name: "Covid-19"
+        user: new Player
     });
 }; // works as '/:room'
 

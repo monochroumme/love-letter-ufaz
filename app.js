@@ -5,6 +5,7 @@ const flash = require('connect-flash');
 const compileSass = require('compile-sass');
 const router = require('./back/routes/routes');
 var rooms = require('./back/controllers/rooms').rooms;
+var Player = require('./back/models/player');
 
 var PORT = process.env.PORT || 3000;
 var socket = require('socket.io');
@@ -44,8 +45,8 @@ io.on('connection', function(socket){
 				
 	socket.on('new-user', function(room, username){
 		socket.join(room);
-		rooms[room].users[socket.id] = username;
-		socket.to(room).broadcast.emit('user-connected', username);
+		rooms[room].users[socket.id] = new Player;
+		socket.to(room).broadcast.emit('user-connected', rooms[room].users[socket.id]);
 	});
 	
 	socket.on('chat', function(data, room){
