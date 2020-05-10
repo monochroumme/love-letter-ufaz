@@ -4,26 +4,19 @@ const bodyParser = require('body-parser');
 const flash = require('connect-flash');
 const compileSass = require('compile-sass');
 const router = require('./back/routes/routes');
-const {userJoin, getCurrentUser} = require('./back/utils/users');
-
-// const mongoose = require('mongoose');
-// const url = 'mongodb+srv://Rufat:rufik1115@cluster0-haajy.mongodb.net/Practice';
-// const session = require('express-session');
-// const MongoDBStore = require('connect-mongodb-session')(session); //session - express-session
-
-const app = express();
-
-app.use(express.static("res"));
+var rooms = require('./back/controllers/rooms').rooms;
 
 var PORT = process.env.PORT || 3000;
 var socket = require('socket.io');
 
-// const csrf = require('csurf');
-// const csrfProtection = csrf();
+const app = express();
+
+app.use(express.static("res"));
+app.use(express.static('public'));
 
 app.use(bodyParser.urlencoded({extended:false}));
 app.set('view engine', 'ejs');
-app.set('views', 'views'); //2nd views is my folder
+app.set('views', 'views');
 
 app.use('/css/:cssName', compileSass.setup({
     sassFilePath: path.join(__dirname, 'res/scss/'),
@@ -37,82 +30,49 @@ app.use('/css/:cssName', compileSass.setup({
     }
 }));
 
-
-// const store = new MongoDBStore({
-//     uri: url, // url is above (mongodb database) (Practice database - if 2 db , then 2 uri)
-//     collection: 'sessions'
-// });
-
-// resave:false - session won't be saved in every request has been done
-// saveUninitialized:false - nothing changed so no save
-// app.use(
-//     session(
-//         {
-//             secret: 'secret',
-//             resave: false,
-//             saveUninitialized: false,
-//             store: store // 2nd store is our MongoDBStore object
-//         }
-//     )
-// );
-
-// app.use(csrfProtection);
-
+// to handle errors
 app.use(flash());
-
-// app.use((req, res, next) => {
-//     res.locals.isAuthenticated = req.session.isLoggedIn;
-//     res.locals.csrfToken = req.csrfToken();
-//     next();
-// });
 
 app.use(router);
 
-// mongoose
-//     .connect(url, {
-//         useUnifiedTopology: true,
-//         useNewUrlParser: true
-//     })
-//     .then(result => {
-	        const server = app.listen(PORT);
-
-	        const io = socket(server);
+const server = app.listen(PORT);
+const io = socket(server);
 	        
-	        io.on('connection', function(socket){
+io.on('connection', function(socket){
+	console.log('connected to socket', socket.id);
+	console.log(rooms);
+				
+	socket.on('new-user', function(room, username){
+		socket.join(room);
+		rooms[room].users[socket.id] = username;
+		socket.to(room).broadcast.emit('user-connected', username);
+	});
+	
+	socket.on('chat', function(data, room){
+		io.in(room).emit('chat', data);
+	});
 
-		        const users = {}
-		        
-		        // io.on('joinRoom', function(username, room){
+	socket.on('typing', function(room, username){
+		socket.to(room).broadcast.emit('typing', rooms[room].users[socket.id]);
+	});
 
-		        socket.on('chat', function(data){
-		            io.sockets.emit('chat', data);
-		        });
+	socket.on('disconnect', () => {
+		getUserRooms(socket).forEach(room => {
+			socket.to(room).broadcast.emit('user-disconnected', rooms[room].users[socket.id]);
+			delete rooms[room].users[socket.id];
+		});
+	});
 
-		        socket.on('typing', function(data){
-		            socket.broadcast.emit('typing', data);
-		        });
-		        
+});
 
-		        socket.on('disconnect', function(){
-		            socket.broadcast.emit('user-disconnected', users[socket.id]);
-		            delete users[socket.id];
-		        });
-
-		        socket.on('new-user', function(username){
-		            users[socket.id] = username;
-		            socket.broadcast.emit('user-connected', username);
-		        });
-
-		        // }); // end of io joinRoom
-	            
-	        });  // end of io connection
-
-//         console.log("MongoDB Connected!");
-//     })
-//     .catch(err => {
-//         console.log(err);
-//     });
+function getUserRooms(socket){
+	return Object.entries(rooms).reduce((names, [name, room]) => {
+		if(room.users[socket.id] != null){
+			names.push(name);
+		}
+		return names;
+	}, [])
+}
 
 console.log("The server started on port", PORT);
-
-module.exports = PORT;
+// console.log(rooms);

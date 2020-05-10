@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= roomName %></title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.js"></script>
+    <script>const roomname = "<%= roomName %>";</script>
+</head>
+<body>
+    <h1>HELLO IT'S YOUR ROOM</h1><br><br>
+    
+    <div id="mario-chat">
+        <h2>Mario Chat</h2>
+        <div id="chat-window">
+            <div id="output"></div>
+            <div id="feedback"> </div>
+        </div>
+        <input id="handle" type="hidden" value="<%= name %>"/>
+        <input id="message" type="text" placeholder="Message" />
+        <button id="send">Send</button>
+    </div>
+    <br><br><br><br><br><br>
+
+   
+
+
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.4/qs.min.js" integrity="sha256-ijqLssetA1NMNjZ+w1zaUafQQLm4IW5OoM8O+4tatME=" crossorigin="anonymous"></script>
+          <script>
+              const socket = io.connect();
+              var message = document.getElementById('message');
+              var handle = document.getElementById('handle');
+              var btn = document.getElementById('send');
+              var output = document.getElementById('output');
+              var feedback = document.getElementById('feedback');
+              var chatWindow = document.getElementById('chat-window');
+              var username = handle.value;
+
+            //   sends data to server when send is clicked
+                btn.addEventListener('click', function(event) {
+                    if(message.value != 0){   
+                        socket.emit('chat', {
+                            message: message.value,
+                            handle: handle.value,
+                            },
+                            roomname
+                        );
+                    }
+                    message.value = "";
+                    message.focus();
+                    chatWindow.scrollTop = chatWindow.scrollHeight;
+                }); 
+
+                // sends data to server when enter is pressed
+                window.addEventListener("keypress", function(event){
+                    if(event.keyCode == 13){
+                        if(message.value != 0){   
+                            socket.emit('chat', {
+                                message: message.value,
+                                handle: handle.value,
+                                },
+                                roomname
+                            );
+                            message.value = "";
+                            message.focus();
+                            chatWindow.scrollTop = chatWindow.scrollHeight;
+                        }
+                    }
+                });
+                
+                socket.emit('disconnect', roomname);
+
+                message.addEventListener('keypress', function(event){
+                    if(event.keyCode != 13){
+                        socket.emit('typing', roomname, handle.value);
+                    }
+                });
+
+                socket.on('chat', function(data){
+                   feedback.innerHTML = "";
+                   output.innerHTML += '<p><strong>' + data.handle + ': </strong>' + data.message + '</p>'; 
+                });
+
+                socket.on('typing', function(data){
+                        feedback.innerHTML = '<p><em>' + data + ' is typing a message...</em></p>';
+                });
+
+                socket.emit('new-user', roomname, username);
+
+                socket.on('user-connected', function(name) {
+                    feedback.innerHTML += `<p><em>${name} has entered the game </em></p`;
+                });
+
+                socket.on('user-disconnected', function(name){
+                    feedback.innerHTML += `<p><em>${name} has left the game </em></p`;
+                });
+
+                
+          </script>  
+</body>
+</html>

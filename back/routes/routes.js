@@ -17,8 +17,8 @@ const rooms = require('../controllers/rooms');
 // router.get('/signup', authController.getSignup);
 
 // GET requests
-router.get('/', api.index);
-router.get('/:room', api.room);
+// router.get('/', api.index);
+// router.get('/:room', api.room);
 
 // SignUP with POST request
 // router.post('/signup', authController.postSignup);
@@ -32,6 +32,8 @@ router.get('/:room', api.room);
 // after Registration Log OUT
 // router.post('/', authController.postLogout);
 
-router.get('/api/:room', rooms.getRoom);
+router.get('/', rooms.getRoom); // index 
 
+router.post('/:room', rooms.postRoom);
+router.get('/:room', rooms.getApiRoom);
 module.exports = router;

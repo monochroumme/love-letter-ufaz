@@ -1,4 +1,6 @@
-const rooms = { name: {}};
+var rooms = {};
+const io = require('socket.io')();
+
 exports.getIndex = function(req, res, next){
     if(!req.session.isLoggedIn){
         res.render('index', {
@@ -11,23 +13,42 @@ exports.getIndex = function(req, res, next){
             rooms: rooms
         });
     }
-};
+}; //doesn't work this route
+
 
 exports.getRoom = function(req, res, next){
-    if(!req.session.isLoggedIn){
-        // return res.redirect('/login');
-    }else{
-        res.render('index', {
+        res.render('game', {
             pageTitle: 'Love Letter - In Game',
-            roomName: req.params.room
+            roomName: req.params.room,
+            rooms: rooms
         });
-    }
-}
+}; // works as '/'
+
 
 exports.postRoom = function(req, res, next){
-    if(rooms[req.body.room] != null){
-        return res.redirect('/'); //video 11:16
+    if(rooms[req.body.room] != null){ // checks if room exists or not
+        return res.redirect('/'); 
     }
     rooms[req.body.room] = {users: {}};
+    // res.redirect('/api/',req.body.room);
     res.redirect(req.body.room);
-};
+
+    io.emit('room-created', req.body.room);
+
+
+}; // works as '/:room'
+
+
+
+exports.getApiRoom = function(req, res, next){
+    if(rooms[req.params.room] == null){
+        return res.redirect('/');
+    }
+    res.render('room', {
+        roomName: req.params.room,
+        pageTitle: req.params.room,
+        name: "Covid-19"
+    });
+}; // works as '/:room'
+
+module.exports.rooms = rooms;
