@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= pageTitle %></title>
-    <link href="https://fonts.googleapis.com/css?family=Dancing+Script&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/css2?family=Risque&family=Roboto:wght@300&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/app.css">
     <link rel="shortcut icon" href="favicon.ico" />
 </head>
@@ -16,14 +15,14 @@
 	<%# <div class="game-logo">
 		<img src="pics/love-letter-logo.png" alt="Love Letter Game">
 	</div> %>
-	<div class="game-modal" style="opacity: 0;">
-		<div class="blur"></div>
+	<div class="game-modal" style="opacity: 0">
+		<div class="game-modal__bg"></div>
 		<div class="card">
 			<img class="game-modal__logo" src="pics/love-letter-logo.png" alt="Love Letter Game">
-			<div id="modal-welcome" class="game-modal__content active">
+			<div id="modal-welcome" class="game-modal__content hidden">
 				<h2 class="game-modal__title">Welcome!</h2>
 				<h3 class="game-modal__subtitle">Please enter your nickname</h3>
-				<div class="game-modal__input-area" id="modal-username">
+				<div class="game-modal__input-area" id="modal-nickname">
 					<input type="text" name="nickname">
 					<button>Enter</button>
 				</div>
@@ -37,21 +36,34 @@
 			</div>
 			<div id="modal-create" class="game-modal__content hidden">
 				<h2 class="game-modal__title">Create a game room</h2>
-				<h3 class="game-modal__subtitle">How many players you want in the game?</h3>
+				<div class="game-modal__double">
+					<div class="game-modal__double__item">
+						<h3 class="game-modal__subtitle">Number of players</h3>
+						<div class="game-modal__input-area game-modal__button-bundle">
+							<button id="modal-create-2" class="active">2</button>
+							<button id="modal-create-3">3</button>
+							<button id="modal-create-4">4</button>
+						</div>
+					</div>
+					<div class="game-modal__double__item">
+						<h3 class="game-modal__subtitle">Room</h3>
+						<div class="game-modal__toggler__wrapper" id="room-open-closed-wrapper">
+			              <button class="game-modal__toggler__button" id="room-open-closed-button">
+			                <div class="game-modal__toggler"></div>
+			              </button>
+			              <span class="game-modal__toggler__status" id="room-open-closed-status">Closed</span>
+			            </div>
+					</div>
+				</div>
 				<div class="game-modal__input-area">
-					<button id="modal-create-2" class="ltr">2</button>
-					<button id="modal-create-3" class="no-radius">3</button>
-					<button id="modal-create-4">4</button>
-					<form>
-						
-					</form>
+					<button class="button" id="create-room-button">Create!</button>
 				</div>
 			</div>
 			<div id="modal-enter" class="game-modal__content hidden">
 				<h2 class="game-modal__title">Enter a game room</h2>
 				<h3 class="game-modal__subtitle">Enter the room code</h3>
 				<div class="game-modal__input-area" id="modal-enter-code">
-					<input type="text" name="nickname">
+					<input type="text" name="nickname" maxlength="30">
 					<button>Enter</button>
 				</div>
 			</div>
@@ -61,6 +73,90 @@
 				<div class="game-modal__input-area flex-column" id="modal-error-message">
 					<p></p>
 					<button class="button">Reload</button>
+				</div>
+			</div>
+			<div id="modal-room" class="game-modal__content game-modal__room active">
+				<h2 class="game-modal__room__title">Room code</h2>
+				<h3 class="game-modal__room__subtitle" id="modal-room-code">000000</h3>
+				<div class="game-modal__room__table" id="modal-room-table">
+					<div class="game-modal__room__table__item">
+						<div class="game-modal__room__table__item__left">
+							<span>monochroumme</span>
+							<img src="pics/token-bunfilled.svg">
+							<img src="pics/token-bunfilled.svg">
+							<img src="pics/token-bunfilled.svg">
+							<img src="pics/token-bunfilled.svg">
+							<img src="pics/token-bunfilled.svg">
+							<img src="pics/token-bunfilled.svg">
+							<img src="pics/token-bunfilled.svg">
+						</div>
+						<div class="game-modal__room__table__item__right">
+							<div class="beam"></div>
+							<div class="popup">
+								<span>Not ready</span>
+							</div>
+						</div>
+					</div>
+					<div class="line"></div>
+					<div class="game-modal__room__table__item">
+						<div class="game-modal__room__table__item__left">
+							<span>ruf</span>
+							<img src="pics/token-bunfilled.svg">
+							<img src="pics/token-bunfilled.svg">
+							<img src="pics/token-bunfilled.svg">
+							<img src="pics/token-bunfilled.svg">
+							<img src="pics/token-bunfilled.svg">
+							<img src="pics/token-bunfilled.svg">
+							<img src="pics/token-bunfilled.svg">
+						</div>
+						<div class="game-modal__room__table__item__right">
+							<div class="beam ready"></div>
+							<div class="popup">
+								<span>Ready</span>
+							</div>
+						</div>
+					</div>
+					<div class="line"></div>
+					<div class="game-modal__room__table__item">
+						<div class="game-modal__room__table__item__left">
+							<span>covid</span>
+							<img src="pics/token-bunfilled.svg">
+							<img src="pics/token-bunfilled.svg">
+							<img src="pics/token-bunfilled.svg">
+							<img src="pics/token-bunfilled.svg">
+							<img src="pics/token-bunfilled.svg">
+							<img src="pics/token-bunfilled.svg">
+							<img src="pics/token-bunfilled.svg">
+						</div>
+						<div class="game-modal__room__table__item__right">
+							<div class="beam"></div>
+							<div class="popup">
+								<span>Not ready</span>
+							</div>
+						</div>
+					</div>
+					<div class="line"></div>
+					<div class="game-modal__room__table__item">
+						<div class="game-modal__room__table__item__left">
+							<span>magic</span>
+							<img src="pics/token-bunfilled.svg">
+							<img src="pics/token-bunfilled.svg">
+							<img src="pics/token-bunfilled.svg">
+							<img src="pics/token-bunfilled.svg">
+							<img src="pics/token-bunfilled.svg">
+							<img src="pics/token-bunfilled.svg">
+							<img src="pics/token-bunfilled.svg">
+						</div>
+						<div class="game-modal__room__table__item__right">
+							<div class="beam"></div>
+							<div class="popup">
+								<span>Not ready</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="game-modal__input-area">
+					<button class="button" id="modal-room-ready">Start the game!</button>
 				</div>
 			</div>
 		</div>
@@ -80,7 +176,7 @@
 				</div>
 			</div>
 			<div class="board__user-info flipped">
-				<h2 class="board__username"><%= playerTop.username %></h2>
+				<h2 class="board__nickname"><%= playerTop.nickname %></h2>
 				<div class="board__tokens">
 					<% for (let i = 0; i < maxTokens; i++) { %>
 						<% if (i < playerTop.tokens) { %>
@@ -96,7 +192,7 @@
 		<% if (playerRight) { %>
 			<div class="player-right">
 				<div class="board__user-info rtl">
-					<h2 class="board__username"><%= playerRight.username %></h2>
+					<h2 class="board__nickname"><%= playerRight.nickname %></h2>
 					<div class="board__tokens">
 						<% for (let i = 0; i < maxTokens; i++) { %>
 							<% if (i < playerRight.tokens) { %>
@@ -124,7 +220,7 @@
 
 		<div class="player-bottom">
 			<div class="board__user-info">
-				<h2 class="board__username"><%= playerBottom.username %></h2>
+				<h2 class="board__nickname"><%= playerBottom.nickname %></h2>
 				<div class="board__tokens">
 					<% for (let i = 0; i < maxTokens; i++) { %>
 						<% if (i < playerBottom.tokens) { %>
@@ -152,7 +248,7 @@
 		<% if (playerLeft) { %>
 			<div class="player-left">
 				<div class="board__user-info ltr">
-					<h2 class="board__username"><%= playerLeft.username %></h2>
+					<h2 class="board__nickname"><%= playerLeft.nickname %></h2>
 					<div class="board__tokens">
 						<% for (let i = 0; i < maxTokens; i++) { %>
 							<% if (i < playerLeft.tokens) { %>
@@ -202,7 +298,22 @@
 			</div>
 		</div>
 	</div>
+	<div class="chat" id="chat-window">
+		<div class="chat__top__wrapper" id="chat-wrapper">
+			<div class="chat__top" id="chat"></div>
+		</div>
+		<div class="chat__line"></div>
+		<div class="chat__bottom">
+			<input id="chat-input" maxlength="300" placeholder="Type...">
+		</div>
+	</div>
 
+	<script src="/socket.io/socket.io.js"></script>
 	<script type="text/javascript" src="js/modal.js"></script>
+	<script type="text/javascript" src="js/chat.js"></script>
+	<script type="text/javascript" src="js/game.js"></script>
+	<% if (room) { %>
+		<script type="text/javascript" src="js/room.js"></script>
+	<% } %>
 </body>
 </html>

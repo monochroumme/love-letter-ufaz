@@ -1,58 +1,37 @@
 const Room = require('../models/room');
-const Player = require('../models/player'); 
-var rooms = {};
-
-
+const Player = require('../models/player');
+const idGenerator = require('../utils/id-generator');
 const io = require('socket.io')();
 
-exports.getIndex = function(req, res, next){
-    if(!req.session.isLoggedIn){
-        res.render('index', {
-            pageTitle: 'Love Letter'
-        });
-    } else {
-        res.render('index', {
-            pageTitle: 'Love Letter',
-            username: req.session.user.username,
-            rooms: rooms
-        });
-    }
-}; //doesn't work this route
-
-
-exports.getRoom = function(req, res, next){
-        res.render('game', {
-            pageTitle: 'Love Letter - In Game',
-            roomName: req.params.room,
-            rooms: rooms
-        });
-}; // works as '/'
-
-
-exports.postRoom = function(req, res, next){
-    if(rooms[req.body.room] != null){ // checks if room exists or not
-        return res.redirect('/'); 
-    }
-    rooms[req.body.room] = new Room;
-    // res.redirect('/api/',req.body.room);
-    res.redirect(req.body.room);
-
-    io.emit('room-created', req.body.room);
-
-
-}; // works as '/:room'
-
-
-
-exports.getApiRoom = function(req, res, next){
-    if(rooms[req.params.room] == null){
-        return res.redirect('/');
-    }
-    res.render('room', {
-        roomName: req.params.room,
-        pageTitle: req.params.room,
-        user: new Player
-    });
-}; // works as '/:room'
-
+let rooms = [];
 module.exports.rooms = rooms;
+
+exports.create = (playerId, data) => {
+    let roomCode = idGenerator.new();
+    rooms[roomCode] = new Room(roomCode, data.roomSize, data.roomStatus, playerId);
+    rooms[roomCode].players.push(new Player(data.nickname, playerId));
+    return roomCode;
+};
+
+exports.newPlayer = (data, playerId) => {
+    rooms[data.roomCode].players.push(new Player(data.nickname, playerId));
+};
+
+exports.removePlayer = (roomCode, playerId) => {
+    if (!rooms[roomCode])
+        return;
+
+    rooms[roomCode].players.splice(0, 1); // host is always the first players
+
+    // if the room has no players anymore, then remove the room
+    if (rooms[roomCode].players.length == 0) {
+        delete rooms[roomCode];
+        return;
+    }
+
+    // if the removed player was the host, then assign the host role to another player
+    if (rooms[roomCode].hostPlayerId == playerId) {
+        rooms[roomCode].hostPlayerId = rooms[roomCode].players[0].playerId;
+    }
+};
+
