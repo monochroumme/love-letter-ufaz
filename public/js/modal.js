@@ -8,94 +8,38 @@ let nickname,
 	roomStatus = 'CLOSED', // OPEN / CLOSED
 	roomCode,
 	dataAdjustable = true,
-	roomModalReady = false,
-	maxTokens;
+	maxTokens,
+	players = [],
+	inGame = false,
+	inRoomModal = false,
+	isReady = false;
 
 // essentials
 function createRoom() {
- 	initChat();
- 	addChatServerMessage('please wait...');
-	dataAdjustable = false;
-
 	// host stuff
 	socket.on('room-host', () => {
+		socket.off('room-host');
 		modalRoomReady.innerHTML = 'Start the game!';
 	});
+
 	// listen to the server response
-	socket.on('room-created', data => {
-		// stop listening to the room-created event
-		// since it will not be received anymore
-		socket.off('room-created');
-
-		roomCode = data.roomCode;
-		maxTokens = data.maxTokens;
-		// changing the title and the url of the page
-   	document.title = 'Love Letter - In Game';
-   	window.history.pushState({
-   		"pageTitle": document.title
-   	}, "", `${roomCode}`);
-
-   	// show the room modal
-   	updateModalRoom({
-   		roomCode,
-   		maxTokens,
-   		players: [
-   			{
-   				nickname: 'monochroumme',
-   				tokens: 2,
-   				status: 'NOT READY'
-   			},
-   			{
-   				nickname: 'ruf',
-   				tokens: 5,
-   				status: 'READY'
-   			},
-   			{
-   				nickname: 'covid',
-   				tokens: 3,
-   				status: 'NOT READY'
-   			},
-   			{
-   				nickname: 'magic',
-   				tokens: 0,
-   				status: 'NOT READY'
-   			}
-   		]
-   	});
-		setModalContent('#modal-room');
-	});
+	listenRoomConnected();
 
 	// make server api call
 	socket.emit('room-create', {
-		nickname: nickname.slice(30),
+		nickname: nickname.substring(0, 31),
 		roomSize,
 		roomStatus
 	});
 }
 
 function enterRoom() {
-	initChat();
-	addChatServerMessage('please wait...');
-	dataAdjustable = false;
 	// listen to the server response
-	socket.on('room-connected', data => {
-		// stop listening to the room-connected event
-		// since it will not be received anymore
-		socket.off('room-connected');
-
-		// changing the title and the url of the page
-     	document.title = 'Love Letter - In Game';
-     	window.history.pushState({
-     		"pageTitle": document.title
-     	}, "", `${roomCode}`);
-
-     	// add all messages to chat
-     	fillChat(data.chat);
-	});
+	listenRoomConnected();
 
 	// make server api call
 	socket.emit('room-connect', {
-		nickname: nickname.slice(30),
+		nickname: nickname.substring(0, 31),
 		roomCode
 	});
 }
@@ -103,8 +47,9 @@ function enterRoom() {
 // -------------
 
 // show the modal after 2 seconds after the page is loaded
+let modal;
 window.onload = () => {
-	let modal = document.querySelector('.game-modal');
+	modal = document.querySelector('.game-modal');
 	setTimeout(() => {
 		modal.classList.add('active');
 	}, 2000);
@@ -112,14 +57,16 @@ window.onload = () => {
 
 const nicknameButton = document.querySelector('#modal-nickname button'),
 			nicknameInput = document.querySelector('#modal-nickname input');
-function setUsername() {
+function setNickname() {
 	nickname = nicknameInput.value;
+	if (nickname.trim() == '')
+		return;
 	nicknameButton.disabled = true;
 	document.querySelector('#modal-menu-welcome').innerHTML = `Welcome ${nickname}!`;
 	setModalContent('#modal-menu');
 }
 
-nicknameButton.onclick = setUsername;
+nicknameButton.onclick = setNickname;
 nicknameInput.addEventListener("keyup", e => {
 	if (event.keyCode == 13) { // enter
 		event.preventDefault();
@@ -223,8 +170,96 @@ const modalRoomCode = document.querySelector('#modal-room-code'),
 			modalRoomReady = document.querySelector('#modal-room-ready'),
 			modalRoomTable = document.querySelector('#modal-room-table');
 modalRoomReady.onclick = () => {
-	socket.emit('game-start');
-}
-function updateModalRoom() {
+	socket.on('update-ready-player-button', status => {
+		socket.off('update-ready-player-button');
+		isReady = status;
+		if (isReady)
+			modalRoomReady.innerHTML = 'Not ready';
+		else 
+			modalRoomReady.innerHTML = 'Ready!';
+	});
 
+	socket.emit('update-ready', !isReady);
+}
+function updateModalRoom(data) {
+	roomCode = data.roomCode;
+	players = data.players;
+	maxTokens = data.maxTokens;
+
+	modalRoomCode.innerHTML = data.roomCode;
+	modalRoomTable.innerHTML = '';
+	for (let i = 0; i < data.players.length; i++) {
+		let item = document.createElement('div'),
+				itemTitle = document.createElement('span'),
+				itemLeft = document.createElement('div'),
+				itemRight = document.createElement('div'),
+				itemHearts = document.createElement('div'),
+				itemBeam = document.createElement('div'),
+				itemPopup = document.createElement('div'),
+				itemPopupSpan = document.createElement('span');
+		item.classList.add('game-modal__room__table__item');
+		itemHearts.classList.add('game-modal__room__table__item__hearts');
+		itemLeft.classList.add('game-modal__room__table__item__left');
+		itemRight.classList.add('game-modal__room__table__item__right');
+		itemBeam.classList.add('beam');
+		itemPopup.classList.add('popup');
+		itemTitle.innerHTML = data.players[i].nickname;
+		modalRoomTable.appendChild(item);
+		item.appendChild(itemLeft);
+		item.appendChild(itemRight);
+		itemLeft.appendChild(itemTitle);
+		itemLeft.appendChild(itemHearts);
+		itemRight.appendChild(itemBeam);
+		itemBeam.appendChild(itemPopup);
+		itemPopup.appendChild(itemPopupSpan);
+		if (data.players[i].status) {
+			itemPopupSpan.innerHTML = 'Ready';
+			itemBeam.classList.add('active');
+		} else {
+			itemPopupSpan.innerHTML = 'Not ready';
+			itemBeam.classList.remove('active');
+		}
+		for (let j = 0; j < data.maxTokens; j++) {
+			let heart = document.createElement('img');
+			if (j < data.players[i].tokens)
+				heart.src = 'pics/token-bfilled.svg';
+			else heart.src = 'pics/token-bunfilled.svg';
+			itemHearts.appendChild(heart);
+		}
+		if (i != data.players.length - 1) {
+			let line = document.createElement('div');
+			line.classList.add('line');
+			modalRoomTable.appendChild(line);
+		}
+	}
+}
+
+socket.on('update-room-modal', roomModalData => {
+	if (inRoomModal) {
+		updateModalRoom(roomModalData);
+	}
+});
+
+function listenRoomConnected() {
+	initChat();
+	addChatServerMessage('please wait...');
+	dataAdjustable = false;
+
+	socket.on('room-connected', data => {
+		// stop listening to the room-connected event
+		// since it will not be received anymore
+		socket.off('room-connected');
+
+		// changing the title and the url of the page
+   	document.title = 'Love Letter - In Game';
+   	window.history.pushState({
+   		"pageTitle": document.title
+   	}, "", `${data.roomModalData.roomCode}`);
+
+   	// show the room modal
+		inRoomModal = true;
+		fillChat(data.chat);
+   	updateModalRoom(data.roomModalData);
+		setModalContent('#modal-room');
+	});
 }

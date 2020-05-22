@@ -35,7 +35,7 @@ function clearChat() {
 function sendChatMessage(message) {
 	socket.emit('chat-message', {
 		from: 'USER',
-		username,
+		nickname,
 		message: message
 	});
 }
@@ -49,7 +49,7 @@ function fillChat(msgs) {
 			msgEl.innerHTML = msgs[i].message;
 			chat.innerHTML += msgEl.outerHTML;
 		} else if (msgs[i].from == 'USER') {
-			msgEl.innerHTML = `${msgs[i].username}: ${msgs[i].message}`;
+			msgEl.innerHTML = `${msgs[i].nickname}: ${msgs[i].message}`;
 			chat.innerHTML += msgEl.outerHTML;
 		}
 	}
@@ -63,7 +63,7 @@ function addChatMessage(data) {
 		} else if (data.from == 'USER') {
 			let msgEl = document.createElement('span');
 			msgEl.classList.add('chat__message');
-			msgEl.innerHTML = `${data.username}: ${data.message}`;
+			msgEl.innerHTML = `${data.nickname}: ${data.message}`;
 			chat.appendChild(msgEl);
 		}
 		chatWrapper.scrollTop = chatWrapper.scrollHeight;

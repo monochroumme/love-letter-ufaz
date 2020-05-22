@@ -6,15 +6,15 @@ const io = require('socket.io')();
 let rooms = [];
 module.exports.rooms = rooms;
 
-exports.create = (playerId, data) => {
+exports.create = (socket, data) => {
     let roomCode = idGenerator.new();
-    rooms[roomCode] = new Room(roomCode, data.roomSize, data.roomStatus, playerId);
-    rooms[roomCode].players.push(new Player(data.nickname, playerId));
+    rooms[roomCode] = new Room(roomCode, data.roomSize, data.roomStatus, socket.id);
+    rooms[roomCode].players.push(new Player(data.nickname, socket));
     return roomCode;
 };
 
-exports.newPlayer = (data, playerId) => {
-    rooms[data.roomCode].players.push(new Player(data.nickname, playerId));
+exports.newPlayer = (data, socket) => {
+    rooms[data.roomCode].players.push(new Player(data.nickname, socket));
 };
 
 exports.removePlayer = (roomCode, playerId) => {

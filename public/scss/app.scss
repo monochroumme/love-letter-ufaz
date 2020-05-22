@@ -6,6 +6,8 @@ body {
 	box-sizing: border-box;
 	width: 100vw;
 	height: 100vh;
+	min-width: 1200px;
+	min-height: 600px;
 	overflow: hidden;
 	font-family: 'Roboto', sans-serif;
 }
@@ -80,6 +82,10 @@ input {
 	z-index: 3;
 	opacity: 0;
 	transition: opacity .5s ease;
+
+	.hidden {
+		display: none !important;
+	}
 
 	&.active {
 		opacity: 1 !important;
@@ -271,6 +277,118 @@ input {
 			}
 		}
 	}
+
+	&__room {
+		width: 100%;
+
+		&__title {
+			font-size: 12px;
+			margin-bottom: 0;
+			font-weight: normal;
+		}
+
+		&__subtitle {
+			font-size: 28px;
+			margin-bottom: 20px;
+		}
+
+		&__table {
+			width: 100%;
+			margin-bottom: 20px;
+
+			.line {
+				width: 90%;
+				height: 1px;
+				background: black;
+				margin: 10px auto;
+			}
+
+			&__item {
+				width: 100%;
+				display: flex;
+				justify-content: space-between;
+				padding: 10px 0;
+
+				&__hearts {
+					display: flex;
+					margin-right: 15px;
+				}
+
+				&__left {
+					width: 100%;
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					font-size: 16px;
+					font-weight: bold;
+
+					span {
+						display: block;
+						margin-right: 5px;
+					}
+
+					img {
+						margin-left: 5px;
+						width: 16px;
+						height: 16px;
+					}
+				}
+
+				&__right {
+					position: relative;
+					display: flex;
+					align-items: center;
+
+					.beam {
+						width: 8px;
+						height: 8px;
+						border-radius: 50%;
+						background: $color-red;
+						box-shadow: 0px 0px 10px 1px rgba(118, 22, 21, .8);
+						position: relative;
+
+						&.active {
+							background: $color-green;
+							box-shadow: 0 0 10px 1px rgba(28,167,84, 0.8);
+						}
+
+						&:hover {
+							.popup {
+								opacity: 1;
+							}
+						}
+					}
+
+					.popup {
+						transition: opacity .2s ease;
+						opacity: 0;
+						position: absolute;
+						bottom: 12px;
+						right: 0;
+						transform: translate(10px, 0);
+						background: white;
+						padding: 10px;
+						border-radius: 10px;
+						white-space: nowrap;
+						font-size: 14px;
+						box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+
+						&:after {
+							z-index: 1;
+							content: "";
+		          position: absolute;
+		          display: block;
+		          right: 9px;
+    					bottom: -6px;
+		          width: 10px;
+		          height: 7px;
+		          background: url("../pics/popup_bottom.svg");
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 .content {
@@ -278,10 +396,6 @@ input {
 	height: 100%;
 	position: relative;
 	z-index: 1;
-}
-
-.hidden {
-	display: none !important;
 }
 
 .board {
@@ -295,10 +409,11 @@ input {
 			.board {
 				&__nickname {
 					margin-bottom: 0;
+					margin-top: -5px;
 				}
 
 				&__tokens {
-					margin-top: 10px;
+					margin-top: 5px;
 					margin-bottom: 5px;
 				}
 			}
@@ -306,7 +421,14 @@ input {
 
 		&.rtl {
 			align-items: flex-end;
-			margin-right: 10px;
+			margin-right: 5px;
+
+			.board {
+				&__nickname {
+					margin-left: 0;
+					margin-right: -5px;
+				}
+			}
 		}
 
 		&.ltr {
@@ -322,13 +444,26 @@ input {
 	&__nickname {
 		font-size: 20px;
 		line-height: 100%;
-		margin-bottom: 10px;
+		margin-bottom: 5px;
 		color: white;
+		border-radius: 10px;
+		padding: 5px;
+		margin-left: -5px;
+		transition: opacity .2s ease;
+
+		&.hidden {
+			opacity: 0;
+		}
 	}
 
 	&__tokens {
 		display: flex;
 		margin-bottom: 10px;
+		transition: opacity .2s ease;
+
+		&.hidden {
+			opacity: 0;
+		}
 
 		img {
 			width: 20px;
@@ -344,6 +479,7 @@ input {
 
 .card {
 	background: none;
+	transition: transform .3s ease;
 }
 
 .cards {
@@ -354,6 +490,10 @@ input {
 	&.top {
 		margin-top: -110px;
 		transform: rotate(180deg);
+
+		.card.hidden {
+			transform: translateY(100px);
+		}
 	}
 
 	&.right {
@@ -370,6 +510,16 @@ input {
 
 	&.bottom {
 		margin-bottom: -150px;
+
+		.card.hidden {
+			transform: translateY(150px) !important;
+		}
+	}
+
+	&.left, &.right {
+		.card.hidden {
+			transform: translateY(200px);
+		}
 	}
 
 	.card {
@@ -392,20 +542,13 @@ input {
 			cursor: pointer;
 
 			&:hover {
-				img {
-					transform: translateY(-60%);
-				}
-			}
-
-			img {
-				transition: transform .2s ease;
+				transform: translateY(-60%);
 			}
 		}
 	}
 }
 
 .player {
-
 	&-top,
 	&-right,
 	&-bottom,
@@ -475,6 +618,10 @@ input {
 			margin-left: -80px;
 			position: relative;
 
+			&.hidden {
+				transform: translateX(50vw);
+			}
+
 			&:first-of-type {
 				margin-left: 0;
 			}
@@ -497,6 +644,10 @@ input {
 		.card {
 			width: 143px;
 			height: 200px;
+
+			&.hidden {
+				transform: translate3d(0, 100vh, 0);
+			}
 
 			&:first-of-type {
 				margin-top: 0;
