@@ -239,4 +239,54 @@ module.exports = class room {
   nextPlayer() {
     this.currentPlayer = this.players.indexOf(v => v.playerId == this.currentPlayer).playerId;
   }
+
+  handleChatAction(playerId, cardIndex) {
+    // is it the current player?
+    if (playerId == this.currentPlayer && this.started && this.inGame) {
+      // does that player have a card at that index?
+      let card = this.players.find(v => v.playerId == playerId).cardsInHand[cardIndex];
+      if (card) {
+        this.handleCard(playerId, card);
+      } else {
+        // send a message
+        this.socketHandler.sendIndividual(playerId, 'chat-message', {
+          from: 'SERVER',
+          message: 'are you a cheater?'
+        });
+      }
+    } else {
+      // send a message
+      this.socketHandler.sendIndividual(playerId, 'chat-message', {
+        from: 'SERVER',
+        message: 'wait for your turn'
+      });
+    }
+  }
+
+  handleCard(playerId, card) {
+    if (card == 1) {
+
+    } else if (card == 2) {
+
+    } else if (card == 3) {
+      if (this.maxPlayers == 2) {
+
+      } else {
+        this.socketHandler.sendIndividual(playerId, 'action-window', {
+          action: 'CHOOSE-PLAYER',
+          // players: 
+        });
+      }
+    } else if (card == 4) {
+
+    } else if (card == 5) {
+
+    } else if (card == 6) {
+
+    } else if (card == 7) {
+
+    } else if (card == 8) {
+
+    }
+  }
 }

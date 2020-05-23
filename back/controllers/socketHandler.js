@@ -69,6 +69,10 @@ function run() {
 				});
 			}
 		});
+
+		socket.on('chat-action', cardIndex => {
+			roomer[roomCode].handleChatAction(socket.id, cardIndex);
+		});
 		
 		socket.on('chat-message', msg => {
 			sendAllMessage(roomCode, msg);

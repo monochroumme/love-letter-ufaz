@@ -236,8 +236,8 @@ socket.on('new-card-other', side => {
 
 // card1 and card2 buttons
 playerBottomCard1.onclick = () => {
-	
+	socket.emit('card-action', 0);
 };
 playerBottomCard2.onclick = () => {
-	
+	socket.emit('card-action', 1);
 };
