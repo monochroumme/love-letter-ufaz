@@ -76,7 +76,7 @@ function run() {
 
 		socket.on('update-ready', status => {
 			// is it the host? and is the game not already running?
-			if (socket.id == roomer.rooms[roomCode].hostPlayerId && !roomer.rooms[roomCode].inGame) {
+			if (socket.id == roomer.rooms[roomCode].hostPlayerId && !roomer.rooms[roomCode].started) {
 				// is everyone ready?
 				if (roomer.rooms[roomCode].isEveryoneReady()) {
 					// TODO start the game

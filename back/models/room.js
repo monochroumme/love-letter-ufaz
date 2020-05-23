@@ -4,6 +4,7 @@ module.exports = class room {
     this.shuffle = require('../utils/shuffle');
     this.roomCode = roomCode;
     this.inGame = false;
+    this.started = false;
     this.roomStatus = roomStatus;
     this.players = [];
     this.winners = [];
@@ -56,6 +57,7 @@ module.exports = class room {
   }
 
   startGame() {
+    this.started = true;
     this.socketHandler.sendAll(this.roomCode, 'hide-room-modal');
     this.startRound();
   }
@@ -72,7 +74,7 @@ module.exports = class room {
 
     // shuffling all 16 cards and putting them in the current deck
     this.currentDeck = this.shuffle([1,1,1,1,1,2,2,3,3,4,4,5,5,6,7,8]);
-    // putting one card aside
+    // putting one card aside (already it is in the dismissedCards as 0)
     this.currentDeck.splice(parseInt(Math.random() * this.currentDeck.length), 1);
     // if we have only 2 players, then put 3 more cards aside
     if (this.maxPlayers == 2) {
@@ -83,7 +85,7 @@ module.exports = class room {
 
     // give everyone one card
     for (let i = 0; i < this.players.length; i++) {
-      this.players[i].cardsInHand.push(this.currentDeck.splice(parseInt(Math.random() * this.currentDeck.length), 1)[0]);
+      this.players[i].cardsInHand[0] = this.currentDeck.splice(parseInt(Math.random() * this.currentDeck.length), 1)[0];
     }
 
     this.socketHandler.sendAllMessage(this.roomCode, {
@@ -195,26 +197,42 @@ module.exports = class room {
     // current player
     this.socketHandler.sendIndividual(this.currentPlayer, 'new-card-self', card);
     // other players
-    let currentPlayerIndex = this.players.indexOf(v => v.playerId == this.currentPlayer);
-    if (currentPlayerIndex == 0) {
-      this.socketHandler.sendIndividual(this.players[1].playerId, 'new-card-other', 'LEFT');
-      this.socketHandler.sendIndividual(this.players[2].playerId, 'new-card-other', 'TOP');
-      this.socketHandler.sendIndividual(this.players[3].playerId, 'new-card-other', 'RIGHT');
-    }
-    if (currentPlayerIndex == 1) {
-      this.socketHandler.sendIndividual(this.players[0].playerId, 'new-card-other', 'LEFT');
-      this.socketHandler.sendIndividual(this.players[2].playerId, 'new-card-other', 'TOP');
-      this.socketHandler.sendIndividual(this.players[3].playerId, 'new-card-other', 'RIGHT');
-    }
-    if (currentPlayerIndex == 2) {
-      this.socketHandler.sendIndividual(this.players[0].playerId, 'new-card-other', 'LEFT');
-      this.socketHandler.sendIndividual(this.players[1].playerId, 'new-card-other', 'TOP');
-      this.socketHandler.sendIndividual(this.players[3].playerId, 'new-card-other', 'RIGHT');
-    }
-    if (currentPlayerIndex == 3) {
-      this.socketHandler.sendIndividual(this.players[0].playerId, 'new-card-other', 'LEFT');
-      this.socketHandler.sendIndividual(this.players[1].playerId, 'new-card-other', 'TOP');
-      this.socketHandler.sendIndividual(this.players[2].playerId, 'new-card-other', 'RIGHT');
+    let currentPlayerIndex = this.players.map(v => v.playerId).indexOf(this.currentPlayer);
+    if (this.players.length == 2) {
+      if (currentPlayerIndex == 0) {
+        this.socketHandler.sendIndividual(this.players[1].playerId, 'new-card-other', 'TOP');
+      } else if (currentPlayerIndex == 1) {
+        this.socketHandler.sendIndividual(this.players[0].playerId, 'new-card-other', 'TOP');
+      }
+    } else if (this.players.length == 3) {
+      if (currentPlayerIndex == 0) {
+        this.socketHandler.sendIndividual(this.players[1].playerId, 'new-card-other', 'TOP');
+        this.socketHandler.sendIndividual(this.players[2].playerId, 'new-card-other', 'TOP');
+      } else if (currentPlayerIndex == 1) {
+        this.socketHandler.sendIndividual(this.players[0].playerId, 'new-card-other', 'TOP');
+        this.socketHandler.sendIndividual(this.players[2].playerId, 'new-card-other', 'LEFT');
+      } else if (currentPlayerIndex == 2) {
+        this.socketHandler.sendIndividual(this.players[1].playerId, 'new-card-other', 'LEFT');
+        this.socketHandler.sendIndividual(this.players[0].playerId, 'new-card-other', 'LEFT');
+      }
+    } else if (this.players.length == 4) {
+      if (currentPlayerIndex == 0) {
+        this.socketHandler.sendIndividual(this.players[1].playerId, 'new-card-other', 'TOP');
+        this.socketHandler.sendIndividual(this.players[2].playerId, 'new-card-other', 'TOP');
+        this.socketHandler.sendIndividual(this.players[3].playerId, 'new-card-other', 'TOP');
+      } else if (currentPlayerIndex == 1) {
+        this.socketHandler.sendIndividual(this.players[0].playerId, 'new-card-other', 'TOP');
+        this.socketHandler.sendIndividual(this.players[2].playerId, 'new-card-other', 'LEFT');
+        this.socketHandler.sendIndividual(this.players[3].playerId, 'new-card-other', 'LEFT');
+      } else if (currentPlayerIndex == 2) {
+        this.socketHandler.sendIndividual(this.players[0].playerId, 'new-card-other', 'LEFT');
+        this.socketHandler.sendIndividual(this.players[1].playerId, 'new-card-other', 'LEFT');
+        this.socketHandler.sendIndividual(this.players[3].playerId, 'new-card-other', 'RIGHT');
+      } else if (currentPlayerIndex == 3) {
+        this.socketHandler.sendIndividual(this.players[0].playerId, 'new-card-other', 'RIGHT');
+        this.socketHandler.sendIndividual(this.players[1].playerId, 'new-card-other', 'RIGHT');
+        this.socketHandler.sendIndividual(this.players[2].playerId, 'new-card-other', 'RIGHT');
+      }
     }
   }
 

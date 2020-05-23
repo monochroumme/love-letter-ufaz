@@ -28,8 +28,8 @@ const playerBottomCard1 = document.querySelector('#player-bottom-card1'),
 			playerLeft = document.querySelector('#player-left'),
 			playerRight = document.querySelector('#player-right');
 
-let	playerBottomCard1Id,
-		playerBottomCard2Id,
+let	playerBottomCard1Id = -1,
+		playerBottomCard2Id = -1,
 		playerTopCard1Exists = false,
 		playerTopCard2Exists = false,
 		playerLeftCard1Exists = false,
@@ -233,3 +233,11 @@ socket.on('new-card-other', side => {
 		}
 	}
 });
+
+// card1 and card2 buttons
+playerBottomCard1.onclick = () => {
+	
+};
+playerBottomCard2.onclick = () => {
+	
+};
