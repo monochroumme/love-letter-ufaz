@@ -4,7 +4,7 @@
   "description": "Game called \"Love Letter\"",
   "main": "app.js",
   "scripts": {
-    "test": "mocha",
+    "test": "mocha || true",
     "dev": "nodemon app.js",
     "start": "node app.js"
   },
@@ -23,13 +23,14 @@
     "nodemailer-sendgrid-transport": "^0.2.0",
     "request": "^2.88.2",
     "socket.io": "^2.3.0",
-    "compile-sass": "^1.1.0",
-    "socket.io-client": "^2.3.0",
-    "node-sass": "^4.14.1"
+    "socket.io-client": "^2.3.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.2",
-    "mocha": "^7.1.2"
+    "chai": "^4.2.0",
+    "compile-sass": "^1.1.0",
+    "mocha": "^7.1.2",
+    "node-sass": "^4.14.1",
+    "nodemon": "^2.0.2"
   },
   "nodemonConfig": {
     "restartable": "rs",
