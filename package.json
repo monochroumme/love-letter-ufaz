@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.2",
-    "mocha": "^7.1.2",
+    "mocha": "^7.1.2"
   },
   "nodemonConfig": {
     "restartable": "rs",
